@@ -5,3 +5,4 @@ Recordings
 Scripts
 package-lock.json
 dist
+.env
