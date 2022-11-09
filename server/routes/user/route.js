@@ -7,6 +7,7 @@ const route = express.Router()
 route.post("/",controller.addUser)
 route.get("/", auth, controller.showUser)
 route.put("/:id", auth, controller.updateUser)
+route.put("/reset/:id", controller.updateUserPassword)
 route.delete("/:id", auth, controller.deleteUser)
 
 export default route

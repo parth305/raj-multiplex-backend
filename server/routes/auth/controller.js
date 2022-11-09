@@ -2,12 +2,15 @@ import User from "../../models/User";
 import jwt from "jsonwebtoken";
 import md5 from "md5";
 import dotenv from "dotenv"
+import sendMail from "../../services/sendMail";
+
 dotenv.config();
+
 const authUser = async (req, res) => {
     try {
         const { email, password } = req.body
-        // const user = await User.findOne({ email: email, varify: true })
-        const user = await User.findOne({ email: email })
+        const user = await User.findOne({ email: email, verify: true })
+        // const user = await User.findOne({ email: email })
         if (user.password == md5(password)) {
             const token = jwt.sign({ user: user }, process.env.secretKey, { expiresIn: "2h" })
             res.json({ response: true, status: res.statusCode, user: user, token: token })
@@ -24,10 +27,11 @@ const authUser = async (req, res) => {
 
 const authEmail = async (req, res) => {
     try {
-        let user = User.findOne({ email: req.body.email, varify: false })
+        let user = await User.findOne({ email: req.body.email })
+        // console.log("===============", user)
         if (user) {
             if (user.otp == req.body.otp) {
-                user = await User.findByIdAndUpdate(user._id, { varify: true }, { runValidators: true, new: true })
+                user = await User.findByIdAndUpdate(user._id, { verify: true }, { runValidators: true, new: true })
                 res.json({ response: true, status: res.statusCode, user: user })
             }
             else {
@@ -44,7 +48,23 @@ const authEmail = async (req, res) => {
     }
 }
 
+const forgetPassword = async (req, res) => {
+    try {
+        let user = await User.findOne({ email: req.body.email, verify: true })
+        if (user) {
+            const otp = Math.floor(1000 + Math.random() * 9000)
+            user = await User.findByIdAndUpdate(user._id, { otp: otp }, { runValidators: true, new: true })
+            await sendMail(req.body.email, "Verify Email Raj multiplex", `<div><h4>Your OTP is</h4> <h2>${otp}</h2></div>`)
+            res.json({ response: true, status: res.statusCode, user: user })
+        }
+    }
+    catch (err) {
+        res.json({ response: false, status: res.statusCode, error: "Invalid email Id" })
+    }
+}
+
 export default {
     authUser: authUser,
-    authEmail: authEmail
+    authEmail: authEmail,
+    forgetPassword: forgetPassword
 }

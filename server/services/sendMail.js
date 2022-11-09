@@ -1,66 +1,36 @@
-import nodemailer from "nodemailer"
-import sendmail from "sendmail"
-import dotenv from "dotenv"
-dotenv.config()
-// const sendMail = async (mail, subject, text) => {
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
-//   // var transporter = nodemailer.createTransport({
-//   //   service: 'gmail',
-//   //   auth: {
-//   //     user: 'rajmultiplex1@gmail.com',
-//   //     pass: process.env.EMAIL_PASSWORD
-//   //   }
-//   // });
+const sendMail = async (email,subject,html) => {
 
-//   // let transporter = nodemailer.createTransport({
-//   //   host: "smtp.gmail.com",
-//   //   port: 465,
-//   //   secure: true, // true for 465, false for other ports
-//   //   auth: {
-//   //     user: 'rajmultiplex1@gmail.com', // generated ethereal user
-//   //     pass: process.env.EMAIL_PASSWORD, // generated ethereal password
-//   //   },
-//   // });
+  dotenv.config()
 
-//   // let testAccount = await nodemailer.createTestAccount();
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      type: 'OAuth2',
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASSWORD,
+      clientId: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      refreshToken: process.env.REFRESH_TOKEN
+    }
+  });
 
-//   // create reusable transporter object using the default SMTP transport
-//   let transporter = nodemailer.createTransport({
-//     host: "smtp.ethereal.email",
-//     port: 587,
-//     secure: false, // true for 465, false for other ports
-//     auth: {
-//       user: 'cielo30@ethereal.email',
-//       pass: '4PEbpQZsBHZ1zGU4FJ'
-//     },
-//   });
+  let mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: subject,
+    html: html
+  };
 
-//   var mailOptions = {
-//     from: 'cielo30@ethereal.email',
-//     to: "rajmultiplex1@gmail.com",
-//     subject: subject,
-//     text: text
-//   };
-
-//   transporter.sendMail(mailOptions, function (error, info) {
-//     if (error) {
-//       console.log(error);
-//     } else {
-//       console.log('Email sent: ' + info.response);
-//     }
-//   });
-// }
-
-const mail = async (mail, subject, text) => {
-  sendmail({
-    from: 'rajmultiplex1@gmail.com',
-    to: 'ramrojan786@gmail.com',
-    subject: 'test sendmail',
-    html: 'Mail of test sendmail ',
-  }, function (err, reply) {
-    console.log(err && err.stack);
-    console.dir(reply);
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
   });
 }
 
-export default mail
+export default sendMail;

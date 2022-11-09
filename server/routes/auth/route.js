@@ -4,7 +4,8 @@ import controller from "./controller"
 const route = express.Router()
 
 route.post("/login",controller.authUser)
-route.post("/email",controller.authEmail)
+route.put("/email",controller.authEmail)
+route.put("/forget",controller.forgetPassword)
 
 
 export default route
