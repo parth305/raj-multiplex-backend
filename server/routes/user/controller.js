@@ -6,11 +6,11 @@ import { RESPONSE_CODES } from "../../services/constants";
 const showUser = async (req, res) => {
     try {
         const users = await User.find({ verify: true })
-        res.json({ response: true, status: RESPONSE_CODES.OK, users: users })
+        res.status(RESPONSE_CODES.OK).json({ response: true, status: RESPONSE_CODES.OK, users: users })
     }
     catch (e) {
         console.log("Can not create user due to,",e);
-        res.json({ response: false, status: RESPONSE_CODES.BAD_REQUEST, error: err.message })
+        res.staus(RESPONSE_CODES.BAD_REQUEST).json({ response: false, status: RESPONSE_CODES.BAD_REQUEST, error: err.message })
     }
 }
 
@@ -26,7 +26,7 @@ const addUser = async (req, res) => {
         if (user) {
             user = await User.findByIdAndUpdate(user._id, reqObj, { runValidators: true, new: true })
             await sendMail(req.body.email, "Verify Email Raj multiplex", `<h4>Your OTP is</h4> <h2>${otp}</h2>`)
-            res.json({ response: true, status: RESPONSE_CODES.OK, user: user })
+            res.status(RESPONSE_CODES.OK).json({ response: true, status: RESPONSE_CODES.OK, user: user })
         }
 
         else {
@@ -36,13 +36,13 @@ const addUser = async (req, res) => {
             // reqObj["otp"] = otp
             let user = await User.create(reqObj)
             await sendMail(req.body.email, "Verify Email Raj multiplex", `<h4>Your OTP is</h4> <h2>${otp}</h2>`)
-            res.json({ response: true, status: RESPONSE_CODES.CREATED, user: user })
+            res.status(RESPONSE_CODES.OK).json({ response: true, status: RESPONSE_CODES.OK, user: user })
         }
     }
 
     catch (err) {
         console.log(err)
-        res.json({ response: false, status: RESPONSE_CODES.BAD_REQUEST, error: err.message })
+        res.status(RESPONSE_CODES.BAD_REQUEST).json({ response: false, status: RESPONSE_CODES.BAD_REQUEST, error: err.message })
     }
 }
 
@@ -54,10 +54,10 @@ const updateUser = async (req, res) => {
             reqObj["password"] = md5(req.body.password)
         }
         const user = await User.findByIdAndUpdate(req.params.id, reqObj, { runValidators: true, new: true })
-        res.json({ response: true, status: RESPONSE_CODES.OK, user: user })
+        res.status(RESPONSE_CODES.OK).json({ response: true, status: RESPONSE_CODES.OK, user: user })
     }
     catch (err) {
-        res.json({ response: false, status: RESPONSE_CODES.BAD_REQUEST, error: err.message })
+        res.status(RESPONSE_CODES.BAD_REQUEST).json({ response: false, status: RESPONSE_CODES.BAD_REQUEST, error: err.message })
     }
 }
 
@@ -66,20 +66,20 @@ const updateUserPassword = async (req, res) => {
         let reqObj = req.body
         reqObj["password"] = md5(req.body.password)
         const user = await User.findByIdAndUpdate(req.params.id, reqObj, { runValidators: true, new: true })
-        res.json({ response: true, status: RESPONSE_CODES.UPDATED, user: user })
+        res.status(RESPONSE_CODES.OK).json({ response: true, status: RESPONSE_CODES.OK, user: user })
     }
     catch (err) {
-        res.json({ response: false, status: RESPONSE_CODES.BAD_REQUEST, error: err.message })
+        res.status(RESPONSE_CODES.BAD_REQUEST).json({ response: false, status: RESPONSE_CODES.BAD_REQUEST, error: err.message })
     }
 }
 
 const deleteUser = async (req, res) => {
     try {
         const user = await User.findByIdAndRemove(req.params.id)
-        res.json({ response: true, status: RESPONSE_CODES.OK, user: user })
+        res.status(RESPONSE_CODES.OK).json({ response: true, status: RESPONSE_CODES.OK, user: user })
     }
     catch (err) {
-        res.json({ response: false, status: res.statusCode, error: err.message })
+        res.status(RESPONSE_CODES.BAD_REQUEST).json({ response: false, status: res.statusCode, error: err.message })
     }
 }
 
