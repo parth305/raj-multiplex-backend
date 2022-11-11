@@ -14,6 +14,10 @@ app.use(logger('dev'))
 
 app.use(express.json());
 
+app.get("/try",(req,res)=>{
+    res.json({response:true})
+})
+
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/", indexRouter)
