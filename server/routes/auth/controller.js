@@ -76,8 +76,26 @@ const forgetPassword = async (req, res) => {
     }
 }
 
+const authToken = async (req, res) => {
+    try {
+        const decodedUser = jwt.verify(req.body.token, process.env.secretKey)
+        const validUser = await User.findOne({ _id: decodedUser.user._id, verify: true })
+        if (validUser) {
+            // console.log("==================== valid user")
+            res.status(RESPONSE_CODES.OK).json({ response: true, status: RESPONSE_CODES.OK, user: validUser })
+        }
+        else {
+            res.json({ response: false, status: res.statusCode, error: "Invalid authorization" })
+        }
+    }
+    catch (e) {
+        res.json({ response: false, status: res.statusCode, error: "Invalid authorization" })
+    }
+}
+
 export default {
     authUser: authUser,
     authEmail: authEmail,
-    forgetPassword: forgetPassword
+    forgetPassword: forgetPassword,
+    authToken: authToken,
 }
