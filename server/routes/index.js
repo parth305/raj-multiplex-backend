@@ -1,11 +1,11 @@
 import express from "express";
 import authRoute from "./auth";
 import userRoute from "./user"
-import upcomingmovieRoute from "./upcomingMovies"
+import movieRoute from "./movie"
 const route = express.Router()
 
 route.use("/auth", authRoute)
 route.use("/user", userRoute)
-route.use("/upcomingmovies",upcomingmovieRoute)
+route.use("/movie", movieRoute)
 
 export default route
